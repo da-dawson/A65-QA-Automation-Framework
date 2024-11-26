@@ -23,7 +23,7 @@ public class Homework16 extends BaseTest {
         String url = "https://qa.koel.app/";
         driver.get(url);
 
-        WebElement registrationLink = driver.findElement(By.xpath("//*[@id='app']/div/div/form/div[2]/a"));
+        WebElement registrationLink = driver.findElement(By.cssSelector("[href='registration']"));
         registrationLink.click();
 
         String registrationUrl = "https://qa.koel.app/registration";
