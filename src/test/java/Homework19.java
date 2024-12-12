@@ -13,6 +13,7 @@ public class Homework19 extends BaseTest {
         clickSubmit();
         choosePlayList();
         clickDeletePlaylistBtn();
+        clickOkButton();
         Assert.assertEquals(getDeletedPlayListMsg(), expectedPlayListDeletedMessage);
     }
 
@@ -25,7 +26,10 @@ public class Homework19 extends BaseTest {
         WebElement deletePlaylist = driver.findElement(By.cssSelector(".btn-delete-playlist"));
         deletePlaylist.click();
     }
-
+    private void clickOkButton() {
+        WebElement clickOkButton = driver.findElement(By.cssSelector(".ok"));
+        clickOkButton.click();
+    }
     public String getDeletedPlayListMsg() {
         WebElement notificationMsg = driver.findElement(By.cssSelector("div.success.show"));
         return notificationMsg.getText();
