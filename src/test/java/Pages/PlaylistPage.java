@@ -1,53 +1,41 @@
+package Pages;
 import org.openqa.selenium.By;
 import org.openqa.selenium.Keys;
+import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.testng.Assert;
-import org.testng.annotations.BeforeClass;
-import org.testng.annotations.Test;
 
-public class Homework21 extends BaseTest {
-    String playListName ;
-    @BeforeClass
-    void login(){
-        loginCorrectCred();
-        playListName ="DominicasPlaylist"+generateRandomName();
-    }
-    @Test(priority = 1)
-    public void createPlaylist()  {
-        clickOnCreatePlaylistBtn();
-        clickOnCreateNewPlaylist();
-        enterNewPlaylistName(playListName);
-        checkShowSuccess();
-    }
-    @Test(priority = 2)
-    public void renamePlaylist()  {
-        doubleClickOnPlaylist(playListName);
-        playListName ="Updated"+ playListName;
-        enterNewPlaylistName(playListName);
-        checkMessage();
-    }
+import java.util.List;
 
-    @Test(priority = 3)
-    public void deletePlaylist()  {
-        clickOnPlaylist(playListName);
-        clickOnDeletePlaylistBtn();
-        checkShowSuccess();
-    }
+public class PlaylistPage extends BasePage{
 
-    private void clickOnCreateNewPlaylist() {
+    public PlaylistPage(WebDriver driver) {
+        super(driver);
+    }
+    public void checkNumberOfSongsInPlaylist() {
+        wait.until(ExpectedConditions.visibilityOfElementLocated(By.cssSelector(".song-list-wrap.main-scroll-wrap.playlist td.title")));
+        List<WebElement> allSongsInPlaylist =driver.findElements(By.cssSelector(".song-list-wrap.main-scroll-wrap.playlist td.title"));
+        //This block is for visibility - printing all the songs
+        for (WebElement element: allSongsInPlaylist)
+        {
+            System.out.println(element.getText());
+        }
+        Assert.assertEquals(allSongsInPlaylist.size(),3);
+    }
+    public void clickOnCreateNewPlaylist() {
         wait.until(ExpectedConditions
                         .visibilityOfElementLocated(By.cssSelector("[data-testid='playlist-context-menu-create-simple']")))
                 .click();
     }
 
-    private void clickOnCreatePlaylistBtn() {
+    public void clickOnCreatePlaylistBtn() {
         wait.until(ExpectedConditions
                         .visibilityOfElementLocated(By.cssSelector("[data-testid='sidebar-create-playlist-btn']")))
                 .click();
     }
 
-    private void enterNewPlaylistName(String newPlayListName) {
+    public void enterNewPlaylistName(String newPlayListName) {
         WebElement playlistInputField = wait.until(ExpectedConditions.visibilityOfElementLocated(By.cssSelector("[name='name']")));
 //       clear() does not work, element has an attribute of "required"
 //       workaround is ctrl A (to select all) then backspace to clear then replace with new playlist name
@@ -58,24 +46,22 @@ public class Homework21 extends BaseTest {
         playlistInputField.sendKeys(Keys.ENTER);
     }
 
-    private void clickOnDeletePlaylistBtn() {
+    public void clickOnDeletePlaylistBtn() {
         WebElement deletePlaylistBtn = wait.until(ExpectedConditions.elementToBeClickable(By.cssSelector(".del.btn-delete-playlist")));
         actions.click(deletePlaylistBtn).perform();
     }
 
-    private void clickOnPlaylist() {
-        WebElement playlist = wait.until(ExpectedConditions.visibilityOfElementLocated(By.cssSelector(".playlist:nth-child(3)")));
-        playlist.click();
+    public void clickOnPlaylist(String playlistName) {
+        wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//a[contains(text(),'" + playlistName + "')]"))).click();
     }
 
-    private void doubleClickOnPlaylist(String playlistName) {
+    public void doubleClickOnPlaylist(String playlistName) {
         WebElement playlistElement =wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//a[contains(text(),'" + playlistName + "')]")));
         actions.doubleClick(playlistElement).perform();
     }
 
-    private void checkMessage() {
+    public void checkMessage(String playListName) {
         WebElement notification = wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//*[contains(text(),'Updated playlist')]")));
         Assert.assertEquals("Updated playlist \""+playListName+".\"",notification.getText());
     }
-
 }
