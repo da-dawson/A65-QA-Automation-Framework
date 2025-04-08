@@ -1,4 +1,3 @@
-import Pages.BasePage;
 import Pages.HomePage;
 import Pages.LoginPage;
 import Pages.PlaylistPage;
@@ -11,38 +10,40 @@ import org.testng.annotations.BeforeClass;
 import org.testng.annotations.BeforeSuite;
 
 public class BaseTest {
-    BasePage basePage;
-    LoginPage loginPage;
-    HomePage homePage;
-    Pages.PlaylistPage playlistPage;
-    public WebDriver driver;
-    public String url = "https://qa.koel.app/";
+    protected WebDriver driver;
+    protected LoginPage loginPage;
+    protected HomePage homePage;
+    protected PlaylistPage playlistPage;
+    private static final String BASE_URL = "https://qa.koel.app/";
 
     @BeforeSuite
-
-    static void setupClass() {
+    public static void setupWebDriverManager() {
         WebDriverManager.chromedriver().setup();
     }
 
     @BeforeClass
-    public void launchBrowser(){
+    public void setUpBrowser() {
         ChromeOptions options = new ChromeOptions();
-        options.addArguments("--remote-allow-origins=*");
-        options.addArguments("--disable-notifications");
-        options.addArguments("--start-maximized");
+        options.addArguments(
+                "--remote-allow-origins=*",
+                "--disable-notifications",
+                "--start-maximized"
+        );
+
         driver = new ChromeDriver(options);
-        basePage = new BasePage(driver);
-        basePage.navigateToPage(url);
+        driver.get(BASE_URL);
+
+        // Initialize Page Objects
         loginPage = new LoginPage(driver);
         homePage = new HomePage(driver);
         playlistPage = new PlaylistPage(driver);
     }
 
     @AfterClass
-    public void closeBrowser() {
-        basePage.quitBrowser();
+    public void tearDownBrowser() {
+        if (driver != null) {
+            driver.quit();
+        }
     }
-
-
-
 }
+

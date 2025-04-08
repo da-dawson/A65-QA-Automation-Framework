@@ -1,38 +1,36 @@
-import Pages.LoginPage;
-import Pages.PlaylistPage;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
-public class Homework22 extends BaseTest{
-    LoginPage loginPage;
-    PlaylistPage playlistPage;
-    public String playListName ;
+public class Homework23 extends BaseTest {
+
+    private String playListName;
+
     @BeforeClass
-    void login(){
-        loginPage = new LoginPage(driver);
-        playlistPage = new PlaylistPage(driver);
+    public void loginAndPreparePlaylistName() {
         loginPage.loginCorrectCred();
-        playListName ="DominicasPlaylist"+basePage.generateRandomName();
+        playListName = "DominicasPlaylist_" + homePage.generateRandomName();
     }
+
     @Test(priority = 1)
-    public void createPlaylist()  {
+    public void createPlaylist() {
         playlistPage.clickOnCreatePlaylistBtn();
         playlistPage.clickOnCreateNewPlaylist();
         playlistPage.enterNewPlaylistName(playListName);
-        basePage.checkShowSuccess();
+        playlistPage.checkShowSuccess();
     }
+
     @Test(priority = 2)
-    public void renamePlaylist()  {
+    public void renamePlaylist() {
         playlistPage.doubleClickOnPlaylist(playListName);
-        playListName ="Updated"+ playListName;
+        playListName = "Updated_" + playListName;
         playlistPage.enterNewPlaylistName(playListName);
         playlistPage.checkMessage(playListName);
     }
 
     @Test(priority = 3)
-    public void deletePlaylist()  {
+    public void deletePlaylist() {
         playlistPage.clickOnPlaylist(playListName);
         playlistPage.clickOnDeletePlaylistBtn();
-        basePage.checkShowSuccess();
+        playlistPage.checkShowSuccess();
     }
 }

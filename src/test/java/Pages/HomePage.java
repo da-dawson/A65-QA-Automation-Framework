@@ -1,49 +1,66 @@
 package Pages;
+
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
-import org.openqa.selenium.interactions.Actions;
+import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.ui.ExpectedConditions;
-import org.openqa.selenium.support.ui.WebDriverWait;
 import org.testng.Assert;
+
 public class HomePage extends BasePage {
+
+    // Static elements with @FindBy
+    @FindBy(css = "li a.songs")
+    private WebElement allSongsLink;
+
+    @FindBy(css = ".playback")
+    private WebElement playButton;
+
+    @FindBy(css = "[data-testid='sound-bar-play']")
+    private WebElement soundBar;
+
+    @FindBy(css = "[data-testid='play-btn']")
+    private WebElement playBtn;
+
+    @FindBy(css = ".side.player-controls")
+    private WebElement playPanel;
+
     public HomePage(WebDriver driver) {
         super(driver);
     }
-//    public HomePage(WebDriver driver) {
-//        super(driver);
-//    }
 
+    // Dynamic locator, so we still use By
     public void clickOnPlaylist(String playlistName) {
-        wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//a[contains(text(),'" + playlistName + "')]"))).click();
+        By playlist = By.xpath("//a[contains(text(),'" + playlistName + "')]");
+        wait.until(ExpectedConditions.visibilityOfElementLocated(playlist)).click();
     }
 
     public void clickAllSongs() {
-        wait.until(ExpectedConditions.elementToBeClickable(By.cssSelector("li a.songs"))).click();
+        wait.until(ExpectedConditions.elementToBeClickable(allSongsLink)).click();
     }
 
     public void clickPlay() {
-        wait.until(ExpectedConditions.elementToBeClickable(By.cssSelector(".playback"))).click();
+        wait.until(ExpectedConditions.elementToBeClickable(playButton)).click();
     }
 
     public void checkSongIsPlaying() {
-        WebElement soundBar = wait.until(ExpectedConditions.visibilityOfElementLocated(By.cssSelector("[data-testid='sound-bar-play']")));
+        wait.until(ExpectedConditions.visibilityOf(soundBar));
         Assert.assertTrue(soundBar.isDisplayed());
     }
 
     public void checkIfPlayBtnIsVisible() {
-        WebElement playBtn = wait.until(ExpectedConditions.visibilityOfElementLocated(By.cssSelector("[data-testid='play-btn']")));
+        wait.until(ExpectedConditions.visibilityOf(playBtn));
         Assert.assertTrue(playBtn.isDisplayed());
     }
 
     public void mouseMoveToPlayBtn() {
-        WebElement playPanel = wait.until(ExpectedConditions.visibilityOfElementLocated(By.cssSelector(".side.player-controls")));
+        wait.until(ExpectedConditions.visibilityOf(playPanel));
         actions.moveToElement(playPanel).click(playPanel).perform();
     }
 
     public void contextClickSongByName(String songName) {
-        WebElement song = wait.until(ExpectedConditions.
-                elementToBeClickable(By.xpath("//section[@id='songsWrapper']//td[text()='" + songName + "']")));
+        By songLocator = By.xpath("//section[@id='songsWrapper']//td[text()='" + songName + "']");
+        WebElement song = wait.until(ExpectedConditions.elementToBeClickable(songLocator));
         actions.contextClick(song).perform();
     }
 }
