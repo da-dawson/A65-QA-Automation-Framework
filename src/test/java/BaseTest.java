@@ -43,13 +43,19 @@ public class BaseTest {
         
         ChromeOptions browserOptions = new ChromeOptions();
         browserOptions.setPlatformName("Windows 10");
-        browserOptions.setBrowserVersion("138.0");
+        browserOptions.setBrowserVersion("120.0");
         HashMap<String, Object> ltOptions = new HashMap<String, Object>();
         ltOptions.put("username", "dominicadawson");
         ltOptions.put("accessKey", "LT_bVB1uT6niL3xTmOMSls5Ghh18BQVwOnm7jVWXsxHv73g1Vd");
-        ltOptions.put("project", "Untitled");
+        ltOptions.put("project", "Koel App Testing");
+        ltOptions.put("name", "Login Test");
+        ltOptions.put("build", "1.0");
         ltOptions.put("selenium_version", "4.0.0");
         ltOptions.put("w3c", true);
+        ltOptions.put("visual", true);
+        ltOptions.put("video", true);
+        ltOptions.put("console", true);
+        ltOptions.put("network", true);
         browserOptions.setCapability("LT:Options", ltOptions);
         
         return new RemoteWebDriver(new URL(hubURL), browserOptions);

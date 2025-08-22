@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd">
-<suite name="Parallel Test Suite" parallel="methods" thread-count="3">
+<suite name="Parallel Test Suite" parallel="methods" thread-count="4" data-provider-thread-count="4">
     <test name="Parallel Tests" preserve-order="false">
         <classes>
-            <class name="LambdaTestVerification"/>
+            <class name="SimpleTest"/>
             <class name="LoginTests"/>
         </classes>
     </test>
