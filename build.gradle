@@ -15,8 +15,53 @@ dependencies {
     testImplementation 'io.github.bonigarcia:webdrivermanager:5.8.0'
 }
 
+// Define test suites
+def suites = [
+    smoke: 'src/test/resources/smoke.xml',
+    regression: 'src/test/resources/regression.xml'
+]
+
+// Default test configuration
 test {
     useTestNG() {
-        suites "src/test/resources/TestNG.xml"
+        suites suites.regression
+        // Enable parallel execution
+        parallel = 'methods'
+        threadCount = 4
+        // Generate HTML report
+        useDefaultListeners = true
+        // Output test results in XML format for Jenkins
+        outputDirectory = file("$buildDir/test-results/testng")
+    }
+    // Show standard out and standard error of the test JVM(s) on the console
+    testLogging {
+        events "passed", "skipped", "failed"
+        showStandardStreams = true
+    }
+    // Fail the build on test failure
+    ignoreFailures = false
+    // Reports directory for Jenkins
+    reports {
+        html.required = true
+        junitXml.required = true
+    }
+}
+
+// Task for smoke tests
+task smokeTest(type: Test) {
+    useTestNG() {
+        suites suites.smoke
+        parallel = 'methods'
+        threadCount = 2
+        useDefaultListeners = true
+        outputDirectory = file("$buildDir/test-results/smoke")
+    }
+    testLogging {
+        events "passed", "skipped", "failed"
+        showStandardStreams = true
+    }
+    reports {
+        html.required = true
+        junitXml.required = true
     }
 }
