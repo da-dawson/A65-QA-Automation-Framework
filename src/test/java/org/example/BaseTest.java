@@ -21,8 +21,8 @@ public class BaseTest {
         return driver.get();
     }
 
-    @BeforeSuite
-    static void setupClass() {
+    @BeforeSuite(alwaysRun = true)
+    public void setupClass() {
         try {
             WebDriverManager.chromedriver().setup();
             WebDriverManager.firefoxdriver().setup();
@@ -32,7 +32,7 @@ public class BaseTest {
         }
     }
 
-    @BeforeMethod
+    @BeforeMethod(alwaysRun = true)
     public void setUp() {
         String browser = System.getProperty("browser", "chrome");
         driver.set(createDriver(browser));
@@ -40,7 +40,7 @@ public class BaseTest {
         driver.get().manage().window().maximize();
     }
 
-    @AfterMethod
+    @AfterMethod(alwaysRun = true)
     public void tearDown() {
         WebDriver currentDriver = driver.get();
         if (currentDriver != null) {

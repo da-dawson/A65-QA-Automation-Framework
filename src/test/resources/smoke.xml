@@ -1,13 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd">
 <suite name="Smoke Test Suite" parallel="methods" thread-count="2">
+    <listeners>
+        <listener class-name="org.testng.reporters.XMLReporter"/>
+        <listener class-name="org.testng.reporters.EmailableReporter"/>
+    </listeners>
     <test name="Smoke Tests">
-        <classes>
-            <class name="org.example.LoginTests">
-                <methods>
-                    <include name="testSuccessfulLogin"/>
-                </methods>
-            </class>
-        </classes>
+        <groups>
+            <run>
+                <include name="smoke"/>
+            </run>
+        </groups>
+        <packages>
+            <package name="org.example.*"/>
+        </packages>
     </test>
 </suite>
