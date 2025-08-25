@@ -3,7 +3,7 @@
 <suite name="Smoke Test Suite" parallel="methods" thread-count="2">
     <test name="Smoke Tests">
         <classes>
-            <class name="LoginTests">
+            <class name="org.example.LoginTests">
                 <methods>
                     <include name="testSuccessfulLogin"/>
                 </methods>
