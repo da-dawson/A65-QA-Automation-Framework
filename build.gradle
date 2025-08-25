@@ -10,13 +10,35 @@ repositories {
 }
 
 dependencies {
-    testImplementation 'org.testng:testng:7.6.1'
-    implementation 'org.seleniumhq.selenium:selenium-java:4.5.0'
-    testImplementation 'io.github.bonigarcia:webdrivermanager:5.8.0'
+    testImplementation 'org.testng:testng:7.8.0'
+    implementation 'org.seleniumhq.selenium:selenium-java:4.16.1'
+    testImplementation 'io.github.bonigarcia:webdrivermanager:5.6.2'
+    implementation 'org.slf4j:slf4j-simple:2.0.9'
+    
+    // Cucumber dependencies
+    testImplementation 'io.cucumber:cucumber-java:7.14.0'
+    testImplementation 'io.cucumber:cucumber-testng:7.14.0'
+    testImplementation 'io.cucumber:cucumber-picocontainer:7.14.0'
 }
 
 test {
     useTestNG() {
-        suites "src/test/resources/TestNG.xml"
+        def suiteFile = file("src/test/resources/${project.findProperty('suite') ?: 'regression'}.xml")
+        suiteXmlFiles = [suiteFile]
+        systemProperties = [
+            'browser': project.findProperty('browser') ?: 'chrome'
+        ]
+        threadCount = (project.findProperty('suite') ?: 'regression') == 'smoke' ? 2 : 4
+        parallel = 'methods'
+    }
+
+    testLogging {
+        events "passed", "skipped", "failed"
+        showStandardStreams = true
+    }
+    
+    reports {
+        html.required = true
+        junitXml.required = true
     }
 }
