@@ -15,53 +15,42 @@ dependencies {
     testImplementation 'io.github.bonigarcia:webdrivermanager:5.8.0'
 }
 
-// Define test suites
-def suites = [
-    smoke: 'src/test/resources/smoke.xml',
-    regression: 'src/test/resources/regression.xml'
-]
+// Get project properties with defaults
+def browser = project.hasProperty('browser') ? project.property('browser') : 'chrome'
+def suite = project.hasProperty('suite') ? project.property('suite') : 'regression'
 
-// Default test configuration
 test {
     useTestNG() {
-        suites suites.regression
-        // Enable parallel execution
-        parallel = 'methods'
-        threadCount = 4
-        // Generate HTML report
+        outputDirectory = file("$buildDir/test-results/test")
         useDefaultListeners = true
-        // Output test results in XML format for Jenkins
-        outputDirectory = file("$buildDir/test-results/testng")
+        
+        // Define which tests to run based on suite parameter
+        def suiteFile = file("src/test/resources/${suite}.xml")
+        suiteXmlFiles = [suiteFile]
+        
+        // Set parallel execution
+        parallel = 'methods'
+        threadCount = suite == 'smoke' ? 2 : 4
     }
-    // Show standard out and standard error of the test JVM(s) on the console
-    testLogging {
-        events "passed", "skipped", "failed"
-        showStandardStreams = true
-    }
-    // Fail the build on test failure
-    ignoreFailures = false
-    // Reports directory for Jenkins
-    reports {
-        html.required = true
-        junitXml.required = true
-    }
-}
 
-// Task for smoke tests
-task smokeTest(type: Test) {
-    useTestNG() {
-        suites suites.smoke
-        parallel = 'methods'
-        threadCount = 2
-        useDefaultListeners = true
-        outputDirectory = file("$buildDir/test-results/smoke")
-    }
+    // Pass browser parameter to tests as a system property
+    systemProperty 'browser', browser
+
+    // Configure test logging
     testLogging {
         events "passed", "skipped", "failed"
         showStandardStreams = true
     }
+
+    // Configure reports
     reports {
-        html.required = true
-        junitXml.required = true
+        junitXml {
+            required = true
+            outputLocation = file("$buildDir/test-results/test")
+        }
+        html {
+            required = true
+            outputLocation = file("$buildDir/reports/tests")
+        }
     }
 }
