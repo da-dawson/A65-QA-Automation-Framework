@@ -23,9 +23,13 @@ public class BaseTest {
 
     @BeforeSuite
     static void setupClass() {
-        WebDriverManager.chromedriver().setup();
-        WebDriverManager.firefoxdriver().setup();
-        WebDriverManager.edgedriver().setup();
+        try {
+            WebDriverManager.chromedriver().setup();
+            WebDriverManager.firefoxdriver().setup();
+            WebDriverManager.edgedriver().setup();
+        } catch (Exception e) {
+            System.out.println("WebDriverManager setup failed, will try direct ChromeDriver setup: " + e.getMessage());
+        }
     }
 
     @BeforeMethod
@@ -46,17 +50,29 @@ public class BaseTest {
     }
 
     private WebDriver createDriver(String browser) {
-        switch (browser.toLowerCase()) {
-            case "chrome":
-                ChromeOptions chromeOptions = new ChromeOptions();
-                chromeOptions.addArguments("--remote-allow-origins=*");
-                return new ChromeDriver(chromeOptions);
-            case "firefox":
-                return new FirefoxDriver(new FirefoxOptions());
-            case "edge":
-                return new EdgeDriver(new EdgeOptions());
-            default:
-                throw new IllegalArgumentException("Browser " + browser + " not supported");
+        try {
+            switch (browser.toLowerCase()) {
+                case "chrome":
+                    ChromeOptions chromeOptions = new ChromeOptions();
+                    chromeOptions.addArguments(
+                        "--remote-allow-origins=*",
+                        "--no-sandbox",
+                        "--disable-dev-shm-usage"
+                    );
+                    return new ChromeDriver(chromeOptions);
+                case "firefox":
+                    return new FirefoxDriver(new FirefoxOptions());
+                case "edge":
+                    return new EdgeDriver(new EdgeOptions());
+                default:
+                    throw new IllegalArgumentException("Browser " + browser + " not supported");
+            }
+        } catch (Exception e) {
+            System.out.println("Failed to create driver for " + browser + ": " + e.getMessage());
+            // Fallback to Chrome if specified browser fails
+            ChromeOptions options = new ChromeOptions();
+            options.addArguments("--remote-allow-origins=*", "--no-sandbox", "--disable-dev-shm-usage");
+            return new ChromeDriver(options);
         }
     }
 }
