@@ -3,12 +3,7 @@
 <suite name="Regression Test Suite" parallel="methods" thread-count="4">
     <test name="Regression Tests">
         <classes>
-            <class name="org.example.LoginTests">
-                <methods>
-                    <include name="testSuccessfulLogin"/>
-                    <include name="testMultipleLogins"/>
-                </methods>
-            </class>
+            <class name="org.example.runners.CucumberTestRunner"/>
         </classes>
     </test>
 </suite>
